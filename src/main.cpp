@@ -1,16 +1,20 @@
-#include <gmpxx.h>
 #include <iostream>
-#include "rsa.hpp"
+#include "rsa_infant.hpp"
 
 int main() {
-    constexpr int key_size = 2048;
-    constexpr int prime_size = key_size / 2;
+    const auto [public_key, private_key] = generate_pairs();
+    std::cout << "[PUBLIC] public key: (" << public_key.n << ", "
+              << public_key.e << ")" << std::endl;
+    std::cout << "[SECRET] private key: (" << private_key.n << ", "
+              << private_key.d << ")" << std::endl;
 
-    const mpz_class p = generate_prime(prime_size);
-    const mpz_class q = generate_prime(prime_size);
+    constexpr unsigned plaintext = 114514;
+    std::cout << "[SECRET] plaintext: " << plaintext << std::endl;
 
-    std::cout << "Prime p: " << p.get_str() << std::endl;
-    std::cout << "Prime q: " << q.get_str() << std::endl;
+    const unsigned ciphertext = encrypt(public_key, plaintext);
+    std::cout << "[PUBLIC] ciphertext: " << ciphertext << std::endl;
+    std::cout << "[SECRET] decrypted plaintext: "
+              << decrypt(private_key, ciphertext) << std::endl;
 
     return 0;
 }
